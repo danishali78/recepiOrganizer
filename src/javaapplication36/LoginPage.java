@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class LoginPage {
     // Define your database connection details
@@ -153,7 +154,7 @@ public class LoginPage {
                signupPanel.add(signupSubmitButton);
 
         // Add the signup panel to the frame
-               frame.setLocationRelativeTo(null);
+              // frame.setLocationRelativeTo(null);
                frame.add(signupPanel);
                frame.setVisible(true);
             }
@@ -239,6 +240,8 @@ public class LoginPage {
         viewButton.addActionListener(e -> {
             // Handle view recipes action
             JOptionPane.showMessageDialog(nextFrame, "View Recipes option selected", "View Recipes", JOptionPane.INFORMATION_MESSAGE);
+            RecipeViewer obj1 = new RecipeViewer();
+            
         });
 
         nextPanel.add(nameLabel);
@@ -251,6 +254,118 @@ public class LoginPage {
     }
 }
 
+
+  class RecipeViewer extends JFrame {
+
+    private HashMap<String, String[]> recipes;
+    private JTextArea ingredientsTextArea;
+    private JTextArea instructionsTextArea;
+
+    public RecipeViewer() {
+        recipes = new HashMap<>();
+        // Sample recipe data
+        recipes.put("Tandoori Chicken", new String[]{"Chicken", "Tomato", "3 tablespoons cooking oil", "Garlic"});
+        recipes.put("Noodles", new String[]{"Maggie", "Boiled Water", "Masala"});
+        recipes.put("Pizza", new String[]{"Chicken", "Cheese", "Capsicum"});
+        recipes.put("Biryani", new String[]{"Rice", "Chicken", "Onion", "Spices"});
+        recipes.put("Seekh Kebab", new String[]{"Minced Meat", "Ginger", "Garlic", "Spices"});
+        recipes.put("Samosa", new String[]{"Potato", "Onion", "Peas", "Spices"});
+
+        setTitle("Recipe Viewer");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Create a panel to hold the recipe buttons
+        JPanel recipePanel = new JPanel();
+        recipePanel.setLayout(new GridLayout(recipes.size(), 1));
+
+        // Create a button for each recipe
+        for (String recipe : recipes.keySet()) {
+            JButton button = new JButton(recipe);
+            button.addActionListener(new RecipeButtonListener());
+            recipePanel.add(button);
+        }
+
+        // Create a scrollable text area for ingredients
+        ingredientsTextArea = new JTextArea();
+        ingredientsTextArea.setFont(new Font("Courier New", Font.BOLD, 14));
+        ingredientsTextArea.setForeground(Color.BLUE);
+        ingredientsTextArea.setBackground(Color.LIGHT_GRAY);
+        ingredientsTextArea.setEditable(false);
+        JScrollPane ingredientsScrollPane = new JScrollPane(ingredientsTextArea);
+
+        // Create a scrollable text area for instructions
+        instructionsTextArea = new JTextArea();
+        instructionsTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        instructionsTextArea.setEditable(false);
+        JScrollPane instructionsScrollPane = new JScrollPane(instructionsTextArea);
+
+        // Create a split pane to display ingredients and instructions side by side
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ingredientsScrollPane, instructionsScrollPane);
+        splitPane.setDividerLocation(300);
+
+        // Add the components to the main frame
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(recipePanel, BorderLayout.WEST);
+        getContentPane().add(splitPane, BorderLayout.CENTER);
+
+        pack();
+        setVisible(true);
+        setLocationRelativeTo(null); // Center the window on the screen
+    }
+
+    private class RecipeButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String recipeName = e.getActionCommand();
+            String[] ingredients = recipes.get(recipeName);
+            if (ingredients != null) {
+                // Clear the existing ingredients and instructions
+                ingredientsTextArea.setText("");
+                instructionsTextArea.setText("");
+
+                // Concatenate the ingredients into a single string with custom formatting
+                StringBuilder ingredientsString = new StringBuilder();
+                for (String ingredient : ingredients) {
+                    ingredientsString.append("• ").append(ingredient).append("\n");
+                }
+
+                // Get the cooking instructions for the selected recipe
+                String instructions = getInstructionsForRecipe(recipeName);
+
+                // Display the ingredients and instructions
+                ingredientsTextArea.setText(ingredientsString.toString());
+                instructionsTextArea.setText(instructions);
+            } else {
+                JOptionPane.showMessageDialog(null, "Recipe not found", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private String getInstructionsForRecipe(String recipeName) {
+        // Add your logic here to fetch the cooking instructions for the given recipe
+        // You can retrieve instructions from a database, file, or any other source
+
+        // For this example, we'll return some hardcoded instructions
+        if (recipeName.equals("Tandoori Chicken")) {
+            return "1. Marinate the chicken with spices.\n2. Grill the chicken until cooked.\n3. Serve hot.";
+        } else if (recipeName.equals("Noodles")) {
+            return "1. Boil water and cook noodles.\n2. Drain the water.\n3. Add masala and mix well.\n4. Serve hot.";
+        } else if (recipeName.equals("Pizza")) {
+            return "1. Prepare the pizza dough.\n2. Add toppings like chicken, cheese, and capsicum.\n3. Bake in the oven until cheese melts.\n4. Slice and serve.";
+        } else {
+            return "No instructions available.";
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new RecipeViewer();
+            }
+        });
+    }
+}
 class addrecipepage{
     
     private static final String DB_URL = "jdbc:mysql://localhost:3306/danishali";
