@@ -10,15 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 public class LoginPage {
     // Define your database connection details
     private static final String DB_URL = "jdbc:mysql://localhost:3306/danish ali";
@@ -86,10 +77,8 @@ public class LoginPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame signupFrame = new JFrame("Signup Page");
-                signupFrame.setSize(400, 300);
+                signupFrame.setSize(500, 400);
                 signupFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-                
         JPanel signupPanel = new JPanel();
         signupPanel.setBackground(new Color(245, 245, 245));
         signupPanel.setLayout(null);
